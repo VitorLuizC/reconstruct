@@ -1,0 +1,34 @@
+{
+  "name": "reconstruct",
+  "version": "0.0.0",
+  "description": "Maps object into a new one using an anonymous function.",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bili src/index.ts --formats cjs,es,umd"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VitorLuizC/reconstruct.git"
+  },
+  "keywords": [
+    "reconstruct",
+    "object-map",
+    "functional-programming"
+  ],
+  "author": {
+    "url": "https://vitorluizc.github.io/",
+    "name": "Vitor Luiz Cavalcanti",
+    "email": "vitorluizc@outlook.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VitorLuizC/reconstruct/issues"
+  },
+  "homepage": "https://github.com/VitorLuizC/reconstruct#readme",
+  "devDependencies": {
+    "bili": "^2.2.7",
+    "rollup-plugin-typescript2": "^0.11.1",
+    "typescript": "^2.7.2"
+  }
+}
