@@ -2,7 +2,12 @@
   "name": "reconstruct",
   "version": "0.0.0",
   "description": "Maps object into a new one using an anonymous function.",
-  "main": "src/index.ts",
+  "cdn": "dist/reconstruct.js",
+  "main": "dist/reconstruct.cjs.js",
+  "unpkg": "dist/reconstruct.js",
+  "module": "dist/reconstruct.es.js",
+  "browser": "dist/reconstruct.js",
+  "jsdelivr": "dist/reconstruct.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "bili src/index.ts --formats cjs,es,umd"
@@ -30,5 +35,8 @@
     "bili": "^2.2.7",
     "rollup-plugin-typescript2": "^0.11.1",
     "typescript": "^2.7.2"
+  },
+  "dependencies": {
+    "object.entries": "^1.0.4"
   }
 }
