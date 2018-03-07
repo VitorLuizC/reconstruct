@@ -10,7 +10,7 @@
   "jsdelivr": "dist/reconstruct.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "bili src/index.ts --formats cjs,es,umd"
+    "build": "tsc src/index.ts --target es2015 && bili --banner --formats cjs,es,umd --js buble"
   },
   "repository": {
     "type": "git",
@@ -31,12 +31,12 @@
     "url": "https://github.com/VitorLuizC/reconstruct/issues"
   },
   "homepage": "https://github.com/VitorLuizC/reconstruct#readme",
+  "dependencies": {
+    "object.assign": "^4.1.0",
+    "object.entries": "^1.0.4"
+  },
   "devDependencies": {
     "bili": "^2.2.7",
-    "rollup-plugin-typescript2": "^0.11.1",
     "typescript": "^2.7.2"
-  },
-  "dependencies": {
-    "object.entries": "^1.0.4"
   }
 }
