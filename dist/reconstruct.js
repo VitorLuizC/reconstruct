@@ -1,3 +1,8 @@
+/*!
+ * reconstruct v0.0.0
+ * (c) 2018-present Vitor Luiz Cavalcanti <vitorluizc@outlook.com> (https://vitorluizc.github.io)
+ * Released under the MIT License.
+ */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -286,6 +291,155 @@ var implementation = function bind(that) {
 
 var functionBind = Function.prototype.bind || implementation;
 
+/* eslint complexity: [2, 17], max-statements: [2, 33] */
+var shams = function hasSymbols() {
+	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
+	if (typeof Symbol.iterator === 'symbol') { return true; }
+
+	var obj = {};
+	var sym = Symbol('test');
+	var symObj = Object(sym);
+	if (typeof sym === 'string') { return false; }
+
+	if (Object.prototype.toString.call(sym) !== '[object Symbol]') { return false; }
+	if (Object.prototype.toString.call(symObj) !== '[object Symbol]') { return false; }
+
+	// temp disabled per https://github.com/ljharb/object.assign/issues/17
+	// if (sym instanceof Symbol) { return false; }
+	// temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+	// if (!(symObj instanceof Symbol)) { return false; }
+
+	// if (typeof Symbol.prototype.toString !== 'function') { return false; }
+	// if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+	var symVal = 42;
+	obj[sym] = symVal;
+	for (sym in obj) { return false; } // eslint-disable-line no-restricted-syntax
+	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
+
+	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
+
+	var syms = Object.getOwnPropertySymbols(obj);
+	if (syms.length !== 1 || syms[0] !== sym) { return false; }
+
+	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
+
+	if (typeof Object.getOwnPropertyDescriptor === 'function') {
+		var descriptor = Object.getOwnPropertyDescriptor(obj, sym);
+		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
+	}
+
+	return true;
+};
+
+// modified from https://github.com/es-shims/es6-shim
+
+
+var canBeObject = function (obj) {
+	return typeof obj !== 'undefined' && obj !== null;
+};
+var hasSymbols$1 = shams();
+var toObject = Object;
+var push = functionBind.call(Function.call, Array.prototype.push);
+var propIsEnumerable = functionBind.call(Function.call, Object.prototype.propertyIsEnumerable);
+var originalGetSymbols = hasSymbols$1 ? Object.getOwnPropertySymbols : null;
+
+var implementation$3 = function assign(target, source1) {
+	if (!canBeObject(target)) { throw new TypeError('target must be an object'); }
+	var objTarget = toObject(target);
+	var s, source, i, props, syms, value, key;
+	for (s = 1; s < arguments.length; ++s) {
+		source = toObject(arguments[s]);
+		props = objectKeys(source);
+		var getSymbols = hasSymbols$1 && (Object.getOwnPropertySymbols || originalGetSymbols);
+		if (getSymbols) {
+			syms = getSymbols(source);
+			for (i = 0; i < syms.length; ++i) {
+				key = syms[i];
+				if (propIsEnumerable(source, key)) {
+					push(props, key);
+				}
+			}
+		}
+		for (i = 0; i < props.length; ++i) {
+			key = props[i];
+			value = source[key];
+			if (propIsEnumerable(source, key)) {
+				objTarget[key] = value;
+			}
+		}
+	}
+	return objTarget;
+};
+
+var lacksProperEnumerationOrder = function () {
+	if (!Object.assign) {
+		return false;
+	}
+	// v8, specifically in node 4.x, has a bug with incorrect property enumeration order
+	// note: this does not detect the bug unless there's 20 characters
+	var str = 'abcdefghijklmnopqrst';
+	var letters = str.split('');
+	var map = {};
+	for (var i = 0; i < letters.length; ++i) {
+		map[letters[i]] = letters[i];
+	}
+	var obj = Object.assign({}, map);
+	var actual = '';
+	for (var k in obj) {
+		actual += k;
+	}
+	return str !== actual;
+};
+
+var assignHasPendingExceptions = function () {
+	if (!Object.assign || !Object.preventExtensions) {
+		return false;
+	}
+	// Firefox 37 still has "pending exception" logic in its Object.assign implementation,
+	// which is 72% slower than our shim, and Firefox 40's native implementation.
+	var thrower = Object.preventExtensions({ 1: 2 });
+	try {
+		Object.assign(thrower, 'xy');
+	} catch (e) {
+		return thrower[1] === 'y';
+	}
+	return false;
+};
+
+var polyfill = function getPolyfill() {
+	if (!Object.assign) {
+		return implementation$3;
+	}
+	if (lacksProperEnumerationOrder()) {
+		return implementation$3;
+	}
+	if (assignHasPendingExceptions()) {
+		return implementation$3;
+	}
+	return Object.assign;
+};
+
+var shim = function shimAssign() {
+	var polyfill$$1 = polyfill();
+	defineProperties_1(
+		Object,
+		{ assign: polyfill$$1 },
+		{ assign: function () { return Object.assign !== polyfill$$1; } }
+	);
+	return polyfill$$1;
+};
+
+var polyfill$2 = polyfill();
+
+defineProperties_1(polyfill$2, {
+	getPolyfill: polyfill,
+	implementation: implementation$3,
+	shim: shim
+});
+
+var object_assign = polyfill$2;
+
 var src = functionBind.call(Function.call, Object.prototype.hasOwnProperty);
 
 var isPrimitive = function isPrimitive(value) {
@@ -381,7 +535,7 @@ if (hasSymbols) {
 }
 });
 
-var hasSymbols$1 = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
+var hasSymbols$2 = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 
 
 
@@ -434,7 +588,7 @@ var es6 = function ToPrimitive(input, PreferredType) {
 	}
 
 	var exoticToPrim;
-	if (hasSymbols$1) {
+	if (hasSymbols$2) {
 		if (Symbol.toPrimitive) {
 			exoticToPrim = GetMethod(input, Symbol.toPrimitive);
 		} else if (isSymbol(input)) {
@@ -463,7 +617,7 @@ var $isNaN = Number.isNaN || function (a) { return a !== a; };
 var _isFinite = Number.isFinite || function (x) { return typeof x === 'number' && !$isNaN(x) && x !== Infinity && x !== -Infinity; };
 
 var has$1 = Object.prototype.hasOwnProperty;
-var assign = function assign(target, source) {
+var assign$1 = function assign(target, source) {
 	if (Object.assign) {
 		return Object.assign(target, source);
 	}
@@ -786,7 +940,7 @@ var isRegex = function isRegex(value) {
 };
 
 var toStr$8 = Object.prototype.toString;
-var hasSymbols$2 = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
+var hasSymbols$3 = typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol';
 
 
 
@@ -827,7 +981,7 @@ var trim = function (value) {
 
 
 // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-abstract-operations
-var ES6 = assign(assign({}, es5$2), {
+var ES6 = assign$1(assign$1({}, es5$2), {
 
 	// https://people.mozilla.org/~jorendorff/es6-draft.html#sec-call-f-v-args
 	Call: function Call(F, V) {
@@ -994,7 +1148,7 @@ var ES6 = assign(assign({}, es5$2), {
 		if (!argument || typeof argument !== 'object') {
 			return false;
 		}
-		if (hasSymbols$2) {
+		if (hasSymbols$3) {
 			var isRegExp = argument[Symbol.match];
 			if (typeof isRegExp !== 'undefined') {
 				return es5$2.ToBoolean(isRegExp);
@@ -1101,7 +1255,7 @@ var ES6 = assign(assign({}, es5$2), {
 		if (this.Type(C) !== 'Object') {
 			throw new TypeError('O.constructor is not an Object');
 		}
-		var S = hasSymbols$2 && Symbol.species ? C[Symbol.species] : void 0;
+		var S = hasSymbols$3 && Symbol.species ? C[Symbol.species] : void 0;
 		if (S == null) {
 			return defaultConstructor;
 		}
@@ -1191,7 +1345,7 @@ var ES6 = assign(assign({}, es5$2), {
 		if (this.Type(O) !== 'Object') {
 			return false;
 		}
-		if (hasSymbols$2 && typeof Symbol.isConcatSpreadable === 'symbol') {
+		if (hasSymbols$3 && typeof Symbol.isConcatSpreadable === 'symbol') {
 			var spreadable = this.Get(O, Symbol.isConcatSpreadable);
 			if (typeof spreadable !== 'undefined') {
 				return this.ToBoolean(spreadable);
@@ -1255,7 +1409,7 @@ var ES6 = assign(assign({}, es5$2), {
 			// 	if C is another realm's Array, C = undefined
 			// 	Object.getPrototypeOf(Object.getPrototypeOf(Object.getPrototypeOf(Array))) === null ?
 			// }
-			if (this.Type(C) === 'Object' && hasSymbols$2 && Symbol.species) {
+			if (this.Type(C) === 'Object' && hasSymbols$3 && Symbol.species) {
 				C = this.Get(C, Symbol.species);
 				if (C === null) {
 					C = void 0;
@@ -1346,7 +1500,7 @@ delete ES6.CheckObjectCoercible; // renamed in ES6 to RequireObjectCoercible
 
 var es2015 = ES6;
 
-var ES2016 = assign(assign({}, es2015), {
+var ES2016 = assign$1(assign$1({}, es2015), {
 	// https://github.com/tc39/ecma262/pull/60
 	SameValueNonNumber: function SameValueNonNumber(x, y) {
 		if (typeof x === 'number' || typeof x !== typeof y) {
@@ -1362,7 +1516,7 @@ var es7 = es2016;
 
 var isEnumerable$1 = functionBind.call(Function.call, Object.prototype.propertyIsEnumerable);
 
-var implementation$3 = function entries(O) {
+var implementation$6 = function entries(O) {
 	var obj = es7.RequireObjectCoercible(O);
 	var entrys = [];
 	for (var key in obj) {
@@ -1373,57 +1527,52 @@ var implementation$3 = function entries(O) {
 	return entrys;
 };
 
-var polyfill = function getPolyfill() {
-	return typeof Object.entries === 'function' ? Object.entries : implementation$3;
+var polyfill$3 = function getPolyfill() {
+	return typeof Object.entries === 'function' ? Object.entries : implementation$6;
 };
 
-var shim = function shimEntries() {
-	var polyfill$$1 = polyfill();
-	defineProperties_1(Object, { entries: polyfill$$1 }, {
+var shim$3 = function shimEntries() {
+	var polyfill = polyfill$3();
+	defineProperties_1(Object, { entries: polyfill }, {
 		entries: function testEntries() {
-			return Object.entries !== polyfill$$1;
+			return Object.entries !== polyfill;
 		}
 	});
-	return polyfill$$1;
+	return polyfill;
 };
 
-var polyfill$2 = polyfill();
+var polyfill$5 = polyfill$3();
 
-defineProperties_1(polyfill$2, {
-	getPolyfill: polyfill,
-	implementation: implementation$3,
-	shim: shim
+defineProperties_1(polyfill$5, {
+	getPolyfill: polyfill$3,
+	implementation: implementation$6,
+	shim: shim$3
 });
 
-var object_entries = polyfill$2;
+var object_entries = polyfill$5;
 
-// type ReconstructΛ = <T extends Object, U extends Object>(value: T[keyof T], property: keyof T, object: T) => U
+/**
+ * Reconstruct an Object into a new one composing lambda's returned objects.
+ * @example ```js
+ * const object = {A: 1, B: 2}
+ * reconstruct(object, (value, key) => ({ [key]: value + 1 })) === {A: 2, B: 3}
+ * ```
+ * @param object Object that contains the properties and methods.
+ * @param λ Lambda to reconstructs object.
+ */
+var reconstruct = function (object, λ) {
+  var merge = function (result, ref) {
+    var property = ref[0];
+    var value = ref[1];
 
-// const reconstruct = <T extends Object, U extends Object>(object: T, λ: ReconstructΛ) => {
-//   const merge = (result: U, [ property, value ]: [keyof T, T[keyof T]]) => {
-//     return Object.assign({}, result, λ(value, property, object))
-//   }
+    return object_assign({}, result, λ(value, property, object));
+  };
+  var result = object_entries(object).reduce(merge, {});
+  return result;
+};
 
-//   const entries = toEntries(object)
-//   const result = entries.reduce(merge, {})
-//   return result
-// }
-
-// export { ReconstructΛ, reconstruct, reconstruct as default }
-
-var getProperties = function (object) { return object_entries(object).map(function (ref) {
-	var property = ref[0];
-
-	return property;
-	}); };
-var getValues = function (object) { return object_entries(object).map(function (ref) {
-	var value = ref[1];
-
-	return value;
-	}); };
-
-exports.getProperties = getProperties;
-exports.getValues = getValues;
+exports.reconstruct = reconstruct;
+exports['default'] = reconstruct;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
