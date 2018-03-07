@@ -1,6 +1,6 @@
 {
   "name": "reconstruct",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Maps object into a new one using an anonymous function.",
   "cdn": "dist/reconstruct.js",
   "main": "dist/reconstruct.cjs.js",
