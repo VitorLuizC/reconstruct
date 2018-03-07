@@ -1,6 +1,6 @@
 {
   "name": "reconstruct",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Maps object into a new one using an anonymous function.",
   "cdn": "dist/reconstruct.js",
   "main": "dist/reconstruct.cjs.js",
@@ -10,7 +10,8 @@
   "jsdelivr": "dist/reconstruct.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc src/index.ts --target es2015 && bili --banner --formats cjs,es,umd --js buble"
+    "build": "tsc src/index.ts --target es2015 && bili --banner --formats cjs,es,umd --js buble",
+    "prepare": "npm run build"
   },
   "repository": {
     "type": "git",
