@@ -1,5 +1,5 @@
 /*!
- * reconstruct v0.1.1
+ * reconstruct v0.1.2
  * (c) 2018-present Vitor Luiz Cavalcanti <vitorluizc@outlook.com> (https://vitorluizc.github.io)
  * Released under the MIT License.
  */
