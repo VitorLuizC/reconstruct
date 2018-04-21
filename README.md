@@ -1,5 +1,7 @@
 # Reconstruct
 
+[![Build Status](https://travis-ci.org/VitorLuizC/reconstruct.svg?branch=master)](https://travis-ci.org/VitorLuizC/reconstruct)
+
 Maps object into a new one using an anonymous function.
 
 ## Installation
