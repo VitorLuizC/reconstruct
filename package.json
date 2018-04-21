@@ -1,6 +1,6 @@
 {
   "name": "reconstruct",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Maps object into a new one using an anonymous function.",
   "cdn": "dist/reconstruct.js",
   "main": "dist/reconstruct.cjs.js",
@@ -14,7 +14,7 @@
     "build:typescript": "tsc src/reconstruct.ts --outDir dist -t es2015 -d",
     "build:bili": "bili dist/reconstruct.js --formats cjs,es,umd --js buble --banner",
     "build": "npm run build:typescript && npm run build:bili",
-    "prepare": "npm run test && npm run build"
+    "prepare": "npm run build && npm run test"
   },
   "repository": {
     "type": "git",
