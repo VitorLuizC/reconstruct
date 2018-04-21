@@ -10,11 +10,11 @@
   "browser": "dist/reconstruct.js",
   "jsdelivr": "dist/reconstruct.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava",
     "build:typescript": "tsc src/reconstruct.ts --outDir dist -t es2015 -d",
     "build:bili": "bili dist/reconstruct.js --formats cjs,es,umd --js buble --banner",
     "build": "npm run build:typescript && npm run build:bili",
-    "prepare": "npm run build"
+    "prepare": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",
@@ -40,6 +40,7 @@
     "object.entries": "^1.0.4"
   },
   "devDependencies": {
+    "ava": "^0.25.0",
     "bili": "^2.2.7",
     "typescript": "^2.7.2"
   }
