@@ -2,13 +2,10 @@
   "name": "reconstruct",
   "version": "0.1.4",
   "description": "Maps object into a new one using an anonymous function.",
-  "cdn": "dist/reconstruct.js",
   "main": "dist/reconstruct.cjs.js",
-  "unpkg": "dist/reconstruct.js",
   "types": "dist/reconstruct.d.ts",
   "module": "dist/reconstruct.es.js",
   "browser": "dist/reconstruct.js",
-  "jsdelivr": "dist/reconstruct.js",
   "scripts": {
     "test": "ava",
     "build:typescript": "tsc src/reconstruct.ts --outDir dist -t es2015 -d",
