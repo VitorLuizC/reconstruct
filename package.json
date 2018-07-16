@@ -1,17 +1,22 @@
 {
   "name": "reconstruct",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Maps object into a new one using an anonymous function.",
   "main": "dist/reconstruct.cjs.js",
-  "types": "dist/reconstruct.d.ts",
+  "types": "types/index.d.ts",
   "module": "dist/reconstruct.es.js",
   "browser": "dist/reconstruct.js",
+  "files": [
+    "dist/",
+    "types/",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
     "test": "ava",
-    "build:typescript": "tsc src/reconstruct.ts --outDir dist -t es2015 -d",
-    "build:bili": "bili dist/reconstruct.js --formats cjs,es,umd --js buble --banner",
-    "build": "npm run build:typescript && npm run build:bili",
-    "prepare": "npm run build && npm run test"
+    "pretest": "npm run build",
+    "build": "tsc && bili src/index.js --formats es,cjs,umd --js buble --banner",
+    "prepare": "npm run test"
   },
   "repository": {
     "type": "git",
@@ -33,12 +38,13 @@
   },
   "homepage": "https://github.com/VitorLuizC/reconstruct#readme",
   "dependencies": {
-    "object.assign": "^4.1.0",
-    "object.entries": "^1.0.4"
+    "object-assign": "^4.1.1",
+    "object-keys": "^1.0.12"
   },
   "devDependencies": {
+    "@types/object-assign": "^4.0.30",
     "ava": "^0.25.0",
-    "bili": "^2.2.7",
-    "typescript": "^2.7.2"
+    "bili": "^3.1.2",
+    "typescript": "^2.9.2"
   }
 }

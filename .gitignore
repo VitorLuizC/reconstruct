@@ -9,5 +9,9 @@ node_modules/
 # We're using Yarn instead.
 package-lock.json
 
-# Rollup's TypeScript 2 cache
-.rpt2_cache
+# JavaScript generated sources.
+src/*.js
+
+# Generated sources & type definitions.
+dist/
+types/
