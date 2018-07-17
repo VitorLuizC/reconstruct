@@ -1,10 +1,12 @@
 import { assign, keys } from './object';
 
-type ReconstructΛ <T, U extends Object> = (
+type Falsy = '' | 0 | false | null | undefined;
+
+type ReconstructΛ <T extends object, U extends object> = (
   value: T[keyof T],
   property: keyof T,
   object: T
-) => Partial<U>;
+) => Partial<U> | Falsy;
 
 /**
  * Reconstruct an Object into a new one composing lambda's returned objects.
@@ -15,17 +17,15 @@ type ReconstructΛ <T, U extends Object> = (
  * @param object Object that contains the properties and methods.
  * @param λ Lambda to reconstructs object.
  */
-function reconstruct <T extends Object, U extends Object> (object: T, λ: ReconstructΛ<T, U>): U {
-  const merge = (reconstruction: Object, property: keyof T) => {
+function reconstruct <T extends object, U extends object> (object: T, λ: ReconstructΛ<T, U>): U {
+  const merge = (reconstruction: object, property: keyof T) => {
     const partial = λ(object[property], property, object);
     if (!partial)
       return reconstruction;
     return assign(reconstruction, partial);
   };
 
-  const reconstruction = keys(object).reduce(merge, {}) as U;
-
-  return reconstruction;
+  return keys(object).reduce(merge, {}) as U;
 }
 
 export { ReconstructΛ, reconstruct, reconstruct as default };
