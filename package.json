@@ -1,6 +1,6 @@
 {
   "name": "reconstruct",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Maps object into a new one using an anonymous function.",
   "cdn": "dist/reconstruct.js",
   "main": "dist/reconstruct.cjs.js",
@@ -41,13 +41,12 @@
   },
   "homepage": "https://github.com/VitorLuizC/reconstruct#readme",
   "dependencies": {
-    "object-assign": "^4.1.1",
-    "object-keys": "^1.0.12"
+    "object-assign": "^4.1.1"
   },
   "devDependencies": {
     "@types/object-assign": "^4.0.30",
     "ava": "^0.25.0",
     "bili": "^3.1.2",
-    "typescript": "^2.9.2"
+    "typescript": "^3.0.1"
   }
 }
