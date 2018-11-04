@@ -1,23 +1,19 @@
-import assign from 'object-assign';
+import assign from 'nano-assign';
 
 /**
- * A collection of properties.
+ * An array of object keys.
  */
-type Properties <T extends object> = Array<Exclude<keyof T, (number | symbol)>>;
+type Keys <T> = Array<Exclude<keyof T, (number | symbol)>>;
 
 /**
- * Get a collection of properties of an object.
+ * Gey an array of object keys.
  */
-const keys = Object.keys as <T extends object> (object: T) => Properties<T>;
+const keys = Object.keys as <T> (object: T) => Keys<T>;
 
 /**
  * Type definition of reconstruct iterator function.
  */
-export type ReconstructΛ <T extends object, U extends object> = (
-  value: T[keyof T],
-  property: keyof T,
-  object: T
-) => Partial<U> | false;
+export type ReconstructΛ <T, U> = (value: T[keyof T], key: keyof T) => Partial<U> | false;
 
 /**
  * Reconstruct an Object into a new one composing lambda's returned objects.
@@ -28,13 +24,9 @@ export type ReconstructΛ <T extends object, U extends object> = (
  * @param object Object that contains the properties and methods.
  * @param λ Lambda to reconstructs object.
  */
-const reconstruct = <T extends object, U extends object> (object: T, λ: ReconstructΛ<T, U>): U => {
-  return keys(object).reduce((reconstruction, property) => {
-    const partial = λ(object[property], property, object);
-    if (!partial)
-      return reconstruction;
-    return assign(reconstruction, partial);
-  }, {} as Partial<U>) as U;
+const reconstruct = <T, U> (object: T, λ: ReconstructΛ<T, U>): U => {
+  const pieces = keys(object).map((key) => λ(object[key], key));
+  return assign(Object.create(null), ...pieces) as U;
 };
 
 export default reconstruct;

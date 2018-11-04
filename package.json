@@ -39,10 +39,9 @@
   },
   "homepage": "https://github.com/VitorLuizC/reconstruct#readme",
   "dependencies": {
-    "object-assign": "^4.1.1"
+    "nano-assign": "^1.0.1"
   },
   "devDependencies": {
-    "@types/object-assign": "^4.0.30",
     "ava": "^0.25.0",
     "ava-ts": "^0.25.2",
     "bili": "^3.3.0",
