@@ -11,15 +11,13 @@
   "umd:main": "dist/reconstruct.js",
   "files": [
     "dist/",
-    "types/",
-    "LICENSE",
-    "README.md"
+    "types/"
   ],
   "scripts": {
-    "test": "ava",
-    "pretest": "npm run build",
-    "build": "tsc && bili src/index.js --formats es,cjs,umd --js buble --banner",
-    "prepare": "npm run test"
+    "test": "ava-ts",
+    "pretest": "yarn build",
+    "build": "bili src/index.ts --banner --format es,cjs,umd",
+    "prepare": "yarn test"
   },
   "repository": {
     "type": "git",
@@ -46,7 +44,16 @@
   "devDependencies": {
     "@types/object-assign": "^4.0.30",
     "ava": "^0.25.0",
-    "bili": "^3.1.2",
-    "typescript": "^3.0.1"
+    "ava-ts": "^0.25.2",
+    "bili": "^3.3.0",
+    "rollup-plugin-typescript2": "^0.17.2",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.6"
+  },
+  "bili": {
+    "typescript2": {
+      "clean": true,
+      "useTsconfigDeclarationDir": true
+    }
   }
 }

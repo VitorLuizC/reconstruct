@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es2015",
+    "strict": true,
+    "target": "es5",
 
     // Settings for module.
-    "module": "es2015",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
 
     // Settings for generating type definitions.
-    "strict": true,
     "declaration": true,
     "declarationDir": "types/"
   },

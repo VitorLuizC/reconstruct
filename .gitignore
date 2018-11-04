@@ -9,9 +9,6 @@ node_modules/
 # We're using Yarn instead.
 package-lock.json
 
-# JavaScript generated sources.
-src/*.js
-
 # Generated sources & type definitions.
 dist/
 types/
